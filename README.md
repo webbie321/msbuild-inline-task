@@ -24,3 +24,10 @@ My issue with the original version is that we create a new runspace with every c
 So I moved things around to have everything run in the same runspace. 
 
 Also used Powershell instances rather than working explicitly with a pipeline (just my preference).
+
+
+Didn't test too much.
+
+```
+C:\Windows\Microsoft.Net\Framework\v4.0.30319\msbuild.exe c:/users/public/powershell.csproj
+```
