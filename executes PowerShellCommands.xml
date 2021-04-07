@@ -2,6 +2,7 @@
   <!-- This inline task executes c# code. -->
   <!-- C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe pshell.xml -->
    <!-- Author: Casey Smith, Twitter: @subTee -->
+  <!-- Modified by: webbie, Twitter: @WebbieSec -->
   <!-- License: BSD 3-Clause -->
   <Target Name="Hello">
    <FragmentExample />
@@ -49,6 +50,13 @@
 				public override bool Execute()
 				{
 					
+					//Init stuff
+					Runspace rs = RunspaceFactory.CreateRunspace();
+           				rs.Open();
+					PowerShell ps = PowerShell.Create();
+            				ps.Runspace = rs;
+					
+
 					while(true)
 					{
 						
@@ -56,51 +64,45 @@
 						string x = Console.ReadLine();
 						try
 						{
-							Console.WriteLine(RunPSCommand(x));
+							Console.WriteLine(RunPSCommand(x,ps));
 						}
 						catch (Exception e)
 						{
+							ps.Commands.Clear();    //otherwise the commands do not clear after an exception
 							Console.WriteLine(e.Message);
 						}
 					}
 					
+					rs.Close();
+
 								return true;
 				}
 				
 				//Based on Jared Atkinson's And Justin Warner's Work
-				public static string RunPSCommand(string cmd)
+				public static string RunPSCommand(string cmd, PowerShell ps)
 				{
-					//Init stuff
-					Runspace runspace = RunspaceFactory.CreateRunspace();
-					runspace.Open();
-					RunspaceInvoke scriptInvoker = new RunspaceInvoke(runspace);
-					Pipeline pipeline = runspace.CreatePipeline();
-					//Add commands
-					pipeline.Commands.AddScript(cmd);
-					//Prep PS for string output and invoke
-					pipeline.Commands.Add("Out-String");
-					Collection<PSObject> results = pipeline.Invoke();
-					runspace.Close();
+					ps.AddScript(cmd + "| Out-String");
+
+            			          Collection<PSObject> results = ps.Invoke();
+					
+					// clear for the next command
+					ps.Commands.Clear();
+					
 					//Convert records to strings
 					StringBuilder stringBuilder = new StringBuilder();
 					foreach (PSObject obj in results)
 					{
-						stringBuilder.Append(obj);
+						stringBuilder.Append(obj.ToString());
+						stringBuilder.Append(Environment.NewLine);
 					}
 					return stringBuilder.ToString().Trim();
 				 }
-				 
-				 public static void RunPSFile(string script)
-				{
-					PowerShell ps = PowerShell.Create();
-					ps.AddScript(script).Invoke();
-				}
+					
 				
 				
 			}
 			
-			
- 
+		
 			
         ]]>
       </Code>
