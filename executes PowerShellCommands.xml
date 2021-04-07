@@ -81,7 +81,11 @@
 				//Based on Jared Atkinson's And Justin Warner's Work
 				public static string RunPSCommand(string cmd, PowerShell ps)
 				{
-					ps.AddScript(cmd + "| Out-String");
+					if (cmd.Length>0) {
+					cmd = cmd + "| Out-String";
+					}
+					
+					ps.AddScript(cmd);
 
             			          Collection<PSObject> results = ps.Invoke();
 					
@@ -97,12 +101,14 @@
 					}
 					return stringBuilder.ToString().Trim();
 				 }
-					
+				 
+				
 				
 				
 			}
 			
-		
+			
+ 
 			
         ]]>
       </Code>
