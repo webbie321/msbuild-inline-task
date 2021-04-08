@@ -25,5 +25,5 @@ Also used Powershell instances rather than working explicitly with a pipeline (j
 Didn't test too much yet, but it seems to work so far.
 
 ```
-C:\Windows\Microsoft.Net\Framework\v4.0.30319\msbuild.exe c:/users/public/powershell.csproj
+C:\Windows\Microsoft.Net\Framework\v4.0.30319\msbuild.exe powershell.csproj
 ```
